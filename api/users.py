@@ -3,8 +3,18 @@ from db.userservice import *
 from pydantic import BaseModel
 from typing import Optional
 from api import result_message
+import re
 
 user_router = APIRouter(prefix="/user", tags=['Пользователь'])
+
+regex = re.compile(
+    r"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")
+
+
+def check_email(email):
+    if re.fullmatch(regex, email):
+        return True
+    return False
 
 
 class UserModel(BaseModel):
@@ -21,8 +31,11 @@ class UserModel(BaseModel):
 @user_router.post('/register_user')
 async def register_user(user_data: UserModel):
     user_dict = dict(user_data)
-    result = register_user_db(**user_dict)
-    return result_message(result)
+    checker = check_email(user_data.email)
+    if checker:
+        result = register_user_db(**user_dict)
+        return result_message(result)
+    return "Неверный email"
 
 
 @user_router.get('/get_exact_all_users')
