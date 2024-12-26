@@ -124,8 +124,22 @@ def create_hashtag_db(text):
     db.add(Hashtag(text=text))
     db.commit()
     return True
+
+
 # Получение хэштега по названию
+def get_hashtag_by_name_db(text):
+    db = next(get_db())
+    exact_hashtag = db.query(Hashtag).filter_by(text=text).first()
+    if exact_hashtag:
+        return exact_hashtag
+    return False
+
 
 # Получение всех хэштегов
+def get_all_hashtags_db():
+    db = next(get_db())
+    all_hashtags = db.query(Hashtag).all()
+    return all_hashtags
 # Удаление хэштега
+
 # Изменение хэштега

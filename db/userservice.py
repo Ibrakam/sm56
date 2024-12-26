@@ -11,6 +11,7 @@ def register_user_db(username, phone_number, email,
                     surname=surname, age=age, city=city)
     db.add(new_user)
     db.commit()
+    return True
 
 
 # Функция для получение определенного пользователя или всех
